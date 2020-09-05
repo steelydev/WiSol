@@ -1,0 +1,330 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <title>Solar System</title>
+    <link href="stylesheet.css" rel="stylesheet"/>
+    
+    <style>
+    	.w3-btn { width:50; background-color:LightGrey; }
+    </style>
+
+</head>
+
+<body>
+<div id='login' >
+	<h3>Solar system</h3>
+	<table>
+		<tr>
+			<td>User:</td>
+			<td><input type='Email' name='User' id='newUser' value='geoff@steelydev.com'></td>
+		</tr>
+		<tr>
+			<td>Password:</td>
+			<td><input type='Password' name='Password' id='newPassword' value='testpass'></td>
+		</tr>
+		<tr>
+			<td>
+				<a href='javascript:createFrontEnd()' id='loginBtn' class='w3-btn'>OK</a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<p id='resultParagraph0'></p>
+
+<p id='resultParagraph1'></p>
+
+<p id='statusMessage' style='color:red;backgroundcolor:green;'></p>
+
+<div id='deviceList' style='display:none'>
+	<hr><h3>Select Device</h3>
+	<table id='deviceTable' border="1" style='display:none'>
+	<tr><th>Name</th><th>Mode</th><th>Storage</th><th>Panels</th><th>Pump</th></tr>
+	<tr id='devicexx' style='display:none' onclick='javascript:control("xx")'>
+		<td id='namexx'></td>
+		<td id='modexx'></td>
+		<td id='storagexx'></td>
+		<td id='panelsxx'></td>
+		<td id='onxx'></td>
+	</tr>
+	<tr id='controlxx' style='display:none'>
+		<td colspan='6'>
+		<form style='border-style:solid;border-width:1px'>
+			<input type='radio' id='setModeOffxx' name='setModexx' value='OFF'><label for='setModeOffxx'>Off</label>
+			<input type='radio' id='setModeAutoxx' name='setModexx' value='AUTO'><label for='setModeAutoxx'>Auto</label>
+			<input type='radio' id='setModeOnxx' name='setModexx' value='ON'><label for='setModeOnxx'>On</label>
+			<input type='button' class='w3-btn' name='Set' value='Set' onclick='javascript:setMode("xx")'>
+			<p>
+			<b>ON</b>: panels <input type='number' name='onDiffxx' value='' maxlength="2"> degrees > storage.
+			<b>OFF</b> panels <input type='number' name='offDiffxx' value='' maxlength="2"> degrees > storage.
+			<input type='button' class='w3-btn' name='Set' value='Set' onclick='javascript:setDiff("xx")'>
+			<p>
+			Thermistor coefficients <a href="http://www.thinksrs.com/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm">Steinhart-Hart Calculator</a><br>
+			A=<input type='number' name='shAxx' value=''><br>
+			B=<input type='number' name='shBxx' value=''><br>
+			C=<input type='number' name='shCxx' value=''><br>
+			<input type='button' class='w3-btn' name='Set' value='Set' onclick='javascript:setSH("xx")'>
+		</form>
+		</td>
+	</tr>
+
+	</table>
+</div>
+
+<div id='nodevices' style='display:none'>
+	<hr><h3>No Connected Devices</h3>
+</div>
+</body>
+
+
+
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/particle-api-js/5/particle.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.2.3/jquery.min.js"></script>
+<script>
+console.log('globals');
+
+var particle = new Particle();
+
+var loggedIn = false;
+var myAccessToken = null;
+var myDeviceID = null;
+var errorText = document.getElementById('resultParagraph0');
+var msgText   = document.getElementById('resultParagraph1');
+var start = window.performance.now();
+var refreshTimer = null;
+var listing = false;
+
+$(document).ready(function () {
+
+	$('#newPassword').keydown(function (e) {
+		if (e.which == 13) {
+			$('#loginBtn').click();
+		}
+	});
+});
+
+
+function createFrontEnd() {
+	start = window.performance.now();
+	
+	var user = document.getElementById("newUser").value;
+	var pass = document.getElementById("newPassword").value;
+	
+
+	console.log('------------------------------');
+	console.log('user',user);
+	console.log('pass',pass);
+	
+	myLogin(user,pass);
+	
+}
+
+function myLogin(user,pass) {
+
+	particle.login({ username: user, password: pass }).then(
+		function(data) {
+			$('#login').hide();
+			console.log('login() data=', data.body);
+			loggedIn = true;
+			myAccessToken = data.body.access_token;
+
+			msgText.innerHTML = '<h3>Logged in as '+ user + '<h3>';
+			console.log('Login successful! myAccessToken=', myAccessToken);
+			//window.navigate = "http://www.steelydev.com/wifire/accessToken.html?accessToken="+access_token;
+			//console.log('after window.location.href');
+
+			//window.location.reload();
+			//console.log('after window.location.reload');
+
+			myListDevices();
+			if (refreshTimer == null) {
+				refreshTimer = setInterval(myListDevices, 20000);
+			}
+
+
+		},
+		function(err) {
+			console.log('Login() err=', err);
+			loggedIn = false;
+			myAccessToken = null;
+
+			msgText.innerHTML = 'Login failed';
+		}
+	);
+}
+function myListDevices() {
+	console.log('myListDevices()');
+
+	particle.listDevices({ auth: myAccessToken }).then(
+		function(devices) {
+		console.log('myListDevices() devices=',devices);
+		
+		var cnt = 0;
+		var data = devices.body;
+		console.log('myListDevices() data=',data);
+		
+		for (i in data) {
+			var rowName = data[i].id;
+
+			if (data[i].connected) {
+				cnt++;
+								
+				if ($('#' + rowName).length == 0 ) {
+					var template = $('#devicexx')[0].outerHTML;
+					var html = template.toString();			
+					html = html.replace(new RegExp('xx','g'), rowName);
+					html = html.replace(new RegExp('device','g'), '');
+					$('#deviceTable').append(html);
+					
+					template = $('#controlxx')[0].outerHTML;
+					html = template.toString();			
+					html = html.replace(new RegExp('xx','g'), rowName);
+					$('#'+rowName).after(html);
+					
+					$('#name' + rowName).html(data[i].name);
+					$('#sn' + rowName).html(data[i].id);
+				}
+				
+				getVariable(myAccessToken, data[i].id, "fullStatus", rowName, function(err,data,targetElement) {
+					if (data.body.result) {
+						var result = $.parseJSON(data.body.result);
+						console.log("result=",result);
+						
+						// see if control panel is showing and only update if hidden
+						var display = $('#control'+targetElement).css('display');
+						console.log('display',display);
+						
+						switch (result.mode) {
+							case 0 : 
+								$('#mode' + targetElement).html("Off");
+								if (display == 'none')
+									$("input[name='setMode"+targetElement+"'][value='OFF']").prop('checked', true);
+								break;
+							case 1 : 
+								$('#mode' + targetElement).html("Auto");
+								if (display == 'none')
+									$("input[name='setMode"+targetElement+"'][value='AUTO']").prop('checked', true);
+								console.log('Set Auto');
+								break;
+							case 2 :
+								$('#mode' + targetElement).html("On");
+								if (display == 'none')
+									$("input[name='setMode"+targetElement+"'][value='ON']").prop('checked', true);
+								break;
+							default:
+								$('#mode' + targetElement).html("???");
+						}
+						$('#storage' + targetElement).html(result.storage);
+						$('#panels' + targetElement).html(result.panels);
+						$('#on' + targetElement).html(result.on ? "On" : "Off");
+						
+						if (display == 'none') {								
+							$("input[name='onDiff"+targetElement+"']").val(result.onDifference);
+							$("input[name='offDiff"+targetElement+"']").val(result.offDifference);
+							$("input[name='shA"+targetElement+"']").val(result.A);
+							$("input[name='shB"+targetElement+"']").val(result.B);
+							$("input[name='shC"+targetElement+"']").val(result.C);
+						}
+						
+						$('#' + targetElement).show();
+						$('#deviceTable').show();
+					}
+				});
+			} else {
+				$('#' + rowName).remove();
+			}
+		}
+		
+		i++;
+		
+		if (cnt == 0) {
+			$('#deviceList').hide();
+			$('#nodevices').show();
+		} else {
+			$('#deviceList').show();
+			$('#nodevices').hide();
+		}
+	  },
+	  function(err) {
+		$('#errText').html(err.body.error_description);
+	  }
+	);
+}
+
+function getVariable(accessToken, deviceID, variableName, targetElement, callback) {
+	particle.getVariable({ deviceId:deviceID, name:variableName, auth:accessToken }).then(
+		function(data) {
+			console.log("getVariable() data",data);
+			if (targetElement) {
+				callback(null,data,targetElement);
+			} else {
+				callback(null,data);
+			}
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+}
+
+function control(device) {
+	$('#control'+device).toggle();
+}
+
+function setMode(device) {
+	console.log('setMode()',device);
+	var mode = $('input:radio[name=setMode'+device+']:checked').val();
+	var json = { MODE:mode };
+	console.log('setMode() mode',mode);
+	particle.callFunction( { deviceId:device, name:'setMode', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setSH() data",data);
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+
+}
+
+function setDiff(device) {
+	console.log('setDiff()',device);
+	var onDiff = $("input[name='onDiff"+device+"']").val()
+	var offDiff = $("input[name='offDiff"+device+"']").val()
+	var json = { ON_DIFFERENCE:onDiff, OFF_DIFFERENCE:offDiff }; 
+		
+	particle.callFunction( { deviceId:device, name:'setDiff', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setSH() data",data);
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+
+
+}
+
+function setSH(device) {
+	console.log('setSH()',device);
+	var shA = $("input[name='shA"+device+"']").val() ;
+	var shB = $("input[name='shB"+device+"']").val() ;
+	var shC = $("input[name='shC"+device+"']").val() ;	
+	var json = { A:shA, B:shB, C:shC };
+	//var json = { A:shA*1048576, B:shB*1048576, C:shC*1048576 };
+	console.log('setSH() json',json);
+	
+	particle.callFunction( { deviceId:device, name:'setSH', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setSH() data",data);
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+
+}
+
+</script>
+</html>

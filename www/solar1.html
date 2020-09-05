@@ -1,0 +1,518 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 		
+		<meta name="viewport" content="width=device-width, initial-scale=1"> 
+		
+		<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+	</head> 
+<body id='body'> 
+
+<!-- #################################################################################### -->
+<script>
+	$(document).on('pagebeforeshow','#page-login',function() {
+		console.log('page-login on pagebeforeshow');
+		//$('[data-role="button"]').button();
+	});
+</script>
+<div id='page-login' data-role="page">  
+
+	<div data-role="header"  data-position='fixed'>
+  	<h1>Solar System</h1>
+	</div><!-- /header -->
+
+	<div role='main' class='ui-content'>
+		<h3>Login</h3>
+
+		<div class='ui-field-contain'>
+			<label for='newUser'>User:</label>
+			<input id='newUser' type='Email' name='User' value='geoff@steelydev.com'>
+			<label for='newPassword'>Password:</label>
+			<input id='newPassword' type='Password' name='Password' value='testpass'>
+		</div>		
+		<a href='javascript:createFrontEnd();' data-inline="true" class='ui-btn' data-role='button' onclick='javascript:createFrontEnd();'>Login</a>
+		<p>
+		
+	</div> <!-- content -->
+	
+	<div data-role="footer" data-position='fixed'>
+		<h1>(c) 2017 Steely Development</h1>
+		<a href='wifi.html' class='ui-btn'>Setup WiFi</a>
+	</div><!-- /header -->
+</div><!-- page-login -->
+
+<!-- #################################################################################### -->
+<style>
+	.container { position:relative; }
+	.text { position:absolute; left:10px; top:0px; text-align:center; }
+	.icon { opacity:0.6; }
+	.spacer { width:40px; }
+</style>
+<div id='page-controllers' data-role='page'>  
+
+	<div data-role="header"  data-position='fixed'>
+  	<h1><span id='loggedInAs'></span></h1>
+  			<a href='#page-login' class="ui-btn ui-icon-back ui-btn-icon-left">Logout</a></li>
+	</div><!-- /header -->
+
+	<div role='main' class='ui-content'>
+		<h3>My Devices</h3>
+		<form class="ui-filterable">
+			<input id="filterBasic-input" data-type="search">
+		</form>
+		<div class='ui-field-contain'>
+			<ul id='deviceList2' data-role="listview" data-inset="true" data-filter="true" data-input="#filterBasic-input">
+				<li style='display:none' id='lixx'>
+					<a id='liLabelxx' href="#page-settings?controller=xx">
+						<font color='blue' id='liNamexx'></font>
+						<span class='spacer'>&nbsp;</span>
+						<span id='liModexx'></span>
+						<span class='spacer'>&nbsp;</span>
+						<span class='container'>
+							<img src="SunIcon.png" width='35px' height='35px' class='icon'>
+							<span id='liPanelsxx' class='text'></span>
+						</span>
+						<span class='spacer'>&nbsp;</span>
+						<span class='container'>
+							<img src="TankIcon.png" width='35px' height='35px' class='icon'>
+							<span id='liStoragexx' class='text'></span>
+						</span>
+					</a>
+				</li>
+			</ul>
+			<a href='javascript:eventStream("xx")' class="ui-btn ui-icon-back">Events</a>
+			<span id='beeped'></span>
+		</div>
+
+		<div id='nodevices' style='display:none'>
+			<h3>No Connected Devices</h3>
+		</div>
+
+	</div> <!-- content -->
+
+	<div data-role="footer"  data-position='fixed'>
+		<h1>(c) 2017 Steely Development</h1>
+	</div>
+</div><!-- page-controllers -->
+
+<!-- #################################################################################### -->
+<script>
+	$(document).bind( "pagebeforechange", function( e, data ) {
+		console.log('pagebeforechange');
+		
+		// We only want to handle changePage() calls where the caller is
+		// asking us to load a page by URL.
+		if ( typeof data.toPage === "string" ) {
+
+			// We are being asked to load a page by URL, but we only
+			// want to handle URLs that request the data for a specific
+			// category.
+			var u = $.mobile.path.parseUrl( data.toPage ),
+				re = /^#page-settings/;
+
+			if ( u.hash.search(re) !== -1 ) {
+
+				// We're being asked to display the items for a specific category.
+				// Call our internal method that builds the content for the category
+				// on the fly based on our in-memory category data structure.
+				updateSettings( u, data.options );
+			}
+		}
+	});
+	
+	function updateSettings(urlObj, options) {
+			console.log('urlObj',urlObj);
+			console.log('options',options);
+			
+	var controllerSn = urlObj.hash.replace( /.*controller=/, "" );
+	console.log('controllerSn',controllerSn);
+
+		// Get the object that represents the category we
+		// are interested in. Note, that at this point we could
+		// instead fire off an ajax request to fetch the data, but
+		// for the purposes of this sample, it's already in memory.
+		controller = controllerList[controllerSn];
+		console.log('controllerList',controllerList);
+		console.log('controller',controller);
+		
+
+		// The pages we use to display our content are already in
+		// the DOM. The id of the page we are going to write our
+		// content into is specified in the hash before the '?'.
+		pageSelector = urlObj.hash.replace( /\?.*$/, "" );
+
+    console.log('controllerSn', controllerSn);
+    console.log('controller', controller);
+    console.log('pageSelector',pageSelector);
+    
+		if (controller) {
+			var $page = $(pageSelector);
+		
+			var mode;
+			switch (controller.mode) {
+				case 0 : 
+					mode = 'Off';
+					break;
+				case 1 : 
+					mode = 'Auto';
+					break;
+				case 2 :
+					mode = 'On';
+					break;
+				default:
+					mode = '????';
+			}
+			
+			
+			$('#setModeBtn').on('click',function() { setMode(controllerSn) });
+			$('#setDiffBtn').on('click',function() { setDiff(controllerSn) });
+			$('#setSHBtn').on('click',function() { setSH(controllerSn) });
+		
+
+			$("input[name='onDiff']").val(controller.onDifference);
+			$("input[name='offDiff']").val(controller.offDifference);
+			$("input[name='shA']").val(controller.A);
+			$("input[name='shB']").val(controller.B);
+			$("input[name='shC']").val(controller.C);
+
+			$(pageSelector).page();
+			$('input:radio[name="setMode"]').prop('checked', false).checkboxradio("refresh");
+			$('input:radio[name="setMode"]').filter('[value="'+mode+'"]').prop('checked', true).checkboxradio("refresh");
+			$.mobile.changePage('#page-settings', { dataUrl:urlObj.href} );
+		}
+	}
+	
+	$(document).on('pagebeforeshow','#page-settings',function() {
+		console.log('page-settings on pagebeforeshow');
+		//$('[data-role="button"]').button();
+	});
+</script>
+
+<div id='page-settings' data-role='page'>  
+  <div data-role="header" data-position='fixed'>
+    <h1>Settings</h1>
+		<a href='#page-controllers' class="ui-btn ui-icon-back ui-btn-icon-left">Controllers</a>
+  </div>
+
+  <div data-role="main" class="ui-content">
+		<div data-role='fieldcontain' class='ui-overlay-shadow ui-corner-all' style='padding:10px 10px 10px 10px;'>
+			<strong>Mode:</strong><br>
+			<fieldset data-role='controlgroup' data-type='horizontal' data-inline='true' >
+				<label for='setModeOff'>Off</label><input type='radio' id='setModeOff' name='setMode' value='Off'>
+				<label for='setModeAuto'>Auto</label><input type='radio' id='setModeAuto' name='setMode' value='Auto'>
+				<label for='setModeOn'>On</label><input type='radio' id='setModeOn' name='setMode' value='On'>
+			</fieldset>
+			<input id='setModeBtn' type='button' name='Set' value='Set' data-inline='true' data-mini='true'>
+		</div>
+
+		<div data-role='fieldcontain' class='ui-overlay-shadow ui-corner-all' style='padding:10px 10px 10px 10px;'>
+			<strong>Differentials: <span style='font-size:75%'>(collectors above storage)</span></strong><br>
+			<label for='onDiff'>On:</label><input id='onDiff' type='number' name='onDiff' value='' maxlength="2" data-inline='true'><br>
+			<label for='offDiff'>Off:</label><input id='offDiff' type='number' name='offDiff' value='' maxlength="2" data-inline='true'><br>
+			<input id='setDiffBtn' type='button' name='Set' value='Set'  data-inline='true' data-mini='true'>
+		</div>			
+
+		<div data-role='fieldcontain' class='ui-overlay-shadow ui-corner-all' style='padding:10px 10px 10px 10px;'>
+			<strong>Thermistor coefficients:</strong> <a href="http://www.thinksrs.com/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm">Steinhart-Hart Calculator</a><br>
+			<label for='shA' style='display:inline'>A=</label><input id='shA' type='number' name='shA' value='' data-inline='true'><br>
+			<label for='shB'>B=</label><input id='shB' type='number' name='shB' value='' data-inline='true'><br>
+			<label for='shC'>C=</label><input id='shC' type='number' name='shC' value='' data-inline='true'><br>
+			<input id='setSHBtn' type='button' name='Set' value='Set'  data-inline='true' data-mini='true'>
+		</div>
+	</div>
+		
+	<div data-role="footer" data-position='fixed'>
+		<h1>(c) 2017 Steely Development</h1>
+	</div>
+</div>
+
+<!-- #################################################################################### -->
+<div data-role="page" data-dialog="true" id="page-loginFailed"> 
+  <div data-role="header" data-fullscreen='true' data-position='fixed'>
+    <h1>Invalid Credentials</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+		<p>Either the user name or password is incorrect, please try again.
+  </div>
+
+  <div data-role="footer" data-fullscreen='true' data-position='fixed'>
+    <h1>&nbsp;</h1>
+  </div>
+</div> 
+
+<!-- #################################################################################### -->
+
+
+</body>
+<script type="text/javascript" src="//cdn.jsdelivr.net/particle-api-js/5/particle.min.js"></script>
+
+<script>
+console.log('globals');
+
+var particle = new Particle();
+
+var loggedIn = false;
+var myAccessToken = null;
+var myDeviceID = null;
+var errorText = document.getElementById('resultParagraph0');
+var msgText   = document.getElementById('resultParagraph1');
+var start = window.performance.now();
+var refreshTimer = null;
+var listing = false;
+var controllerList = {};
+
+$(document).ready(function () {
+
+	$('#newPassword').keydown(function (e) {
+		if (e.which == 13) {
+			//$('#loginBtn').click();
+		}
+	});
+	
+});
+
+
+function createFrontEnd() {
+	start = window.performance.now();
+	
+	var user = document.getElementById("newUser").value;
+	var pass = document.getElementById("newPassword").value;
+	
+
+	console.log('------------------------------');
+	console.log('user',user);
+	console.log('pass',pass);
+	
+	myLogin(user,pass);
+	
+}
+
+function myLogin(user,pass) {
+
+	particle.login({ username: user, password: pass }).then(
+		function(data) {
+			console.log('login() data=', data.body);
+			loggedIn = true;
+			myAccessToken = data.body.access_token;
+
+			$('#loggedInAs').html(user);
+			console.log('Login successful! myAccessToken=', myAccessToken);
+			//window.navigate = "http://www.steelydev.com/wifire/accessToken.html?accessToken="+access_token;
+			//console.log('after window.location.href');
+
+			//window.location.reload();
+			//console.log('after window.location.reload');
+
+			myListDevices();
+			if (refreshTimer == null) {
+				refreshTimer = setInterval(myListDevices, 20000);
+			}
+
+			window.location.href='#page-controllers';
+			//$.mobile.changePage('page-controllers');
+		},
+		function(err) {
+			console.log('Login() err=', err);
+			loggedIn = false;
+			myAccessToken = null;
+
+			window.location.href='#page-loginFailed';
+			//$.mobile.navigate('page-loginFailed');
+		}
+	);
+}
+function myListDevices() {
+	console.log('myListDevices()');
+
+	particle.listDevices({ auth: myAccessToken }).then(
+		function(devices) {
+		console.log('myListDevices() devices=',devices);
+		
+		var cnt = 0;
+		var data = devices.body;
+		controllerList = {};
+		console.log('myListDevices() data=',data);
+		
+		for (i in data) {
+			var rowName = data[i].id;
+
+			if (data[i].connected) {
+				cnt++;
+								
+				if ($('#li' + rowName).length == 0 ) {
+
+					// create device list entry
+					template = $('#lixx')[0].outerHTML;
+					console.log('lixx',template);
+					html = template.toString();			
+					html = html.replace(new RegExp('xx','g'), rowName);
+					$('#deviceList2').append(html);
+					
+					$('#liName' + rowName).html(data[i].name);
+				}
+				
+				getVariable(myAccessToken, data[i].id, "fullStatus", rowName, function(err,data,targetElement) {
+					if (data.body.result) {
+						var result = $.parseJSON(data.body.result);
+						console.log("result=",result);
+						
+						controllerList['' + targetElement + ''] = result;
+						console.log('controllerList',controllerList);
+						
+						// see if control panel is showing and only update if hidden
+						var display = $('#control'+targetElement).css('display');
+						console.log('display',display);
+						
+						var mode;
+						switch (result.mode) {
+							case 0 : 
+								mode = 'Off';
+								break;
+							case 1 : 
+								mode = 'Auto';
+								break;
+							case 2 :
+								mode = 'On';
+								break;
+							default:
+								mode = '????';
+						}
+												
+						if (result.on == 0 || mode == 'Off') 
+							mode = '<font color="red">' + mode + '</font>';
+						if (result.on == 1 || mode == 'On')
+							mode = '<font color="green">' + mode + '</font>';
+							
+						$('#liMode' + targetElement).html(mode);	
+						$('#liPanels' + targetElement).html(result.panels);					
+						$('#liStorage' + targetElement).html(result.storage);					
+						$('#li' + targetElement).show();
+					}
+				});
+			} else {
+				$('#' + rowName).remove();
+			}
+		}
+		
+		i++;
+		
+		if (cnt == 0) {
+			//$('#deviceList').hide();
+			//$('#nodevices').show();
+		} else {
+			//$('#deviceList').show();
+			//$('#nodevices').hide();
+		}
+	  },
+	  function(err) {
+		$('#errText').html(err.body.error_description);
+	  }
+	);
+}
+
+function getVariable(accessToken, deviceID, variableName, targetElement, callback) {
+	particle.getVariable({ deviceId:deviceID, name:variableName, auth:accessToken }).then(
+		function(data) {
+			console.log("getVariable() data",data);
+			if (targetElement) {
+				callback(null,data,targetElement);
+			} else {
+				callback(null,data);
+			}
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+}
+
+function control(device) {
+	$('#control'+device).toggle();
+}
+
+function setMode(device) {
+	console.log('setMode()',device);
+	var mode = $('input:radio[name=setMode]:checked').val();
+	var json = { MODE:mode };
+	console.log('setMode() json',json);
+	
+	particle.callFunction( { deviceId:device, name:'setMode', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setMode() data",data);
+		},
+		function(err) {
+			console.log('setMode() err', err);
+		}
+	);
+
+}
+
+function setDiff(device) {
+	console.log('setDiff()',device);
+	var onDiff = $("input[name='onDiff']").val()
+	var offDiff = $("input[name='offDiff']").val()
+	var json = { ON_DIFFERENCE:onDiff, OFF_DIFFERENCE:offDiff }; 
+	console.log('setDiff() json',json);
+		
+	particle.callFunction( { deviceId:device, name:'setDiff', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setDiff() data",data);
+		},
+		function(err) {
+			console.log('setDiff() err', err);
+		}
+	);
+
+
+}
+
+function setSH(device) {
+	console.log('setSH()',device);
+	var shA = $("input[name='shA']").val() ;
+	var shB = $("input[name='shB']").val() ;
+	var shC = $("input[name='shC']").val() ;	
+	var json = { A:shA, B:shB, C:shC };
+	//var json = { A:shA*1048576, B:shB*1048576, C:shC*1048576 };
+	console.log('setSH() json',json);
+	
+	particle.callFunction( { deviceId:device, name:'setSH', argument:JSON.stringify(json), auth:myAccessToken }).then(
+		function(data) {
+			console.log("setSH() data",data);
+		},
+		function(err) {
+			$('#errText').html(err.body.error_description);
+		}
+	);
+
+}
+
+function eventStream(device) {
+		/*Get all events
+		particle.getEventStream({ auth: myAccessToken}).then(function(stream) {
+			stream.on('event', function(data) {
+				console.log("All: " + data);
+			});
+		});
+    */
+    
+		//Get your devices events
+		particle.getEventStream({ deviceId: 'mine', auth: myAccessToken }).then(function(stream) {
+			stream.on('event', function(data) {
+				console.log("Mine: ",data);
+				$('#beeped').html(data.name + ' ' + data.data);
+			});
+		});
+
+		/*Get test event for specific device
+		particle.getEventStream({ deviceId: device, name: 'test', auth: myAccessToken }).then(function(stream) {
+			stream.on('event', function(data) {
+				console.log("Device: " + data);
+			});
+		});
+		*/
+}
+
+</script>
+</html>

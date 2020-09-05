@@ -1,0 +1,268 @@
+<!DOCTYPE html 
+      PUBLIC "-//W3C//DTD HTML 4.01//EN"
+      "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en-US">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head profile="http://www.w3.org/2005/10/profile">
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+
+
+<body>
+<div id="page-wifi" data-role='page'>
+
+	<div data-role="header"  data-position='fixed'>
+  	<h1><span id='loggedInAs'></span></h1>
+  			<a href='solar.html' class="ui-btn ui-icon-back ui-btn-icon-left">Login</a>
+	</div><!-- /header -->
+
+	<div class='ui-content'>
+	<h3>Setup Device's WiFi Network</h3>
+	<p>Place the device in <b>listen</b> mode. (Hold down setup button until status LED flashes blue)
+	<p>Connect to the device's WiFi network. (It should be named Photon-<i>xxxx</i> where <i>xxxx</i> are random letters)
+	<p>Once you are connected to the device's WiFi network, <a href='javascript:scan();'>Show WiFi networks</a>
+	<div id='scanBlock' class='block' style='display:none;'><hr><h3>Scanning...</h3></div>
+	<div id='SSIDNotFoundBlock'  class='block' style='display:none'>"<hr><h3>AP's</h3>No WiFi networks found"</div>
+	<div id='SSIDBlock' class='block' style='display:none;'>
+		<hr><h3>Select WiFi network</h3>
+		<table id='SSIDTable'>
+			<tr><th>WiFi network</th><th>Signal Strength</th><th>Security</th><th>Channel</th></tr>
+		</table>
+	</div>
+	<div id="needPassword" class='block' style='display:none'>
+		<br>
+		 <span id='ssid'></span> password: <input id="password"></input>&nbsp;&nbsp;<button class='join'>Join</button>
+	</div>
+	<div id="noPassword" class='block' style='display:none'>
+		 <button class='join'>Join</button>
+	</div>
+	<p id="infoBlock" class='block' ></p>
+	<p id="keyBlock" class='block' ></p>
+	<div id='reconnectBlock' class='block' style='display:none;'><h3>Reconnect this computer to your WiFi network.</h3></div>
+	
+	<div data-role="footer" data-position='fixed'>
+		<h1>(c) 2017 Steely Development</h1>
+	</div><!-- /header -->
+</div>
+</body>
+
+
+<script src='rsa/jsbn_1.js'></script>
+<script src='rsa/jsbn_2.js'></script>
+<script src='rsa/prng4.js'></script>
+<script src='rsa/rng.js'></script>
+<script src='rsa/rsa.js'></script>
+<script> 
+var public_key;
+var rsa = new RSAKey();
+var key = undefined;
+var apScan = undefined;
+var host = 'http://192.168.0.1/';
+
+
+function scan() {
+	console.log('scan()');
+
+	// clear display blocks
+	$('.block').hide();
+	$('#scanBlock').show();
+
+	$.ajax({
+		url: host + 'device-id',
+		type: 'GET',
+		success: deviceInfoCB,
+		error: function (a,b,c) {
+			$('#scanBlock').hide();
+			window.alert("Can not connect to device.  Please make sure device is in Listen mode and you are connected to device's network");
+		}
+		});
+		
+	getPublicKey();
+}
+
+function deviceInfoCB(data, status, xhr) {
+	console.log('deviceInfoCB()');
+	console.log('deviceInfoCB() data=',data);
+
+
+	var claimed = data.c ? "yes" : "no"
+	console.log("Device ID: %s, claimed: %s", data.id, claimed);
+	var text = '<hr><h3>Device Info</h3>Device ID=' + data.id + ', claimed=' + claimed;
+
+	$('#infoBlock').html(text);
+	
+	$.ajax({
+		url: host + 'scan-ap',
+		type: 'GET',
+		success: scanCB,
+		error: function (a,b,c) {
+			$('#scanBlock').hide();
+			window.alert("Can not connect to device.  Please make sure device is in Listen mode and you are connected to devices's network");
+		}
+		});
+};
+
+function scanCB(data, status, xhr) {
+	console.log('scanCB()'); 		
+	console.log('scanCB() data=',data);
+
+	$('.dynamic').remove();
+	var first = true;
+	var sec = "none";
+	apScan = data.scans;
+	console.log(apScan);
+
+	for (var i in apScan) {
+		if (first) {
+			first = false;
+		}
+	
+		html = '<tr class="dynamic" onclick=\"javascript:getPassword(\''+i+'\')\"><td>' + apScan[i].ssid + '</td>';
+		html += '<td>' + apScan[i].rssi + '</td>';
+		
+		switch (apScan[i].sec) {
+			case 0:
+				sec = "none";
+				break
+			case 1:
+				sec = "wep_psk";
+				break;
+			case 0x8001:
+				sec = "wep_shared";
+				break;
+			case 0x00200002: 
+				sec = "wpa_tkip";
+				break;
+			case 0x00200004:
+				sec = "wpa_aes";
+				break;
+			case 0x00400004:
+				sec = "wpa2_aes";
+				break;
+			case 0x00400002:
+				sec = "wpa2_tkip";
+				break;
+			case 0x00400006:
+				sec = "wpa2_mixed";
+				break;
+			case 0x00400006:
+				sec = "wpa2";
+				break;
+			default:
+				sec = "unknown";
+				break;
+		}  
+		
+		//apScan[i].sec = sec;
+
+		html += '<td>' + sec + '</td>';
+		html += '<td>' + apScan[i].ch + '</td>';
+		html += '</tr>';
+		
+		$('#SSIDTable').append(html);
+	}
+	
+	$('#scanBlock').hide();
+	if (first)
+		$('#SSIDNotFoundBlock').show();
+	else
+		$('#SSIDBlock').show();
+}
+
+function getPassword(recNumber) {
+	var scanRecord = apScan[recNumber];
+	console.log('getPassword() scanRecord=',scanRecord);
+
+	$('.join').click(function() { configure(recNumber); });
+	if (scanRecord.sec == 0) 
+		$('#noPassword').show();
+	else {
+		$('#ssid').html(apScan[recNumber].ssid);
+		$('#needPassword').show();
+		}
+
+	$('#password').focus();
+}
+
+function getPublicKey() {
+	console.log('getPublicKey()');
+	$.ajax({
+		url: host + 'public-key',
+		type: 'GET',
+		success: getPublicKeyCB,
+		error: function (a,b,c) {
+			window.alert("Can not retrieve public key from device. Please start this process over");
+		}
+		});
+}
+
+function getPublicKeyCB(data, status, hxr) {
+	console.log('getPublicKeyCB()');	 
+	console.log('getPublicKeyCB() data=', data);
+	
+	public_key = data.b;
+    rsa.setPublic(public_key.substring(58, 58 + 256), public_key.substring(318, 318 + 6));
+
+	$('#keyBlock').html('Public key=' + public_key);
+}
+
+function configure(recNumber) {
+	console.log('configure()');
+
+	var config = { 
+		idx : 0, 
+		ssid : apScan[recNumber].ssid, 
+		pwd : rsa.encrypt($('#password').val()),
+		sec: apScan[recNumber].sec,
+		ch: apScan[recNumber].ch
+		}
+			
+	console.log('configure() config=');
+	console.log(config);
+
+	$.ajax({
+		url:  host + 'configure-ap',
+		type: 'POST',
+		contentType: 'multipart/form-data',
+		data: JSON.stringify(config),
+		success: configureCB,
+		error: function (a,b,c) {
+			console.log('configure() error a',a);
+			console.log('configure() error b',b);
+			console.log('configure() error c',c);
+			window.alert("Error sending configuration to device.  Please start this process over.");
+		}
+		});
+}
+
+function configureCB(data, status, xhr) {
+	console.log('configureCB()');
+	
+	$.ajax({
+		url: host + 'connect-ap',
+		type: 'POST',
+		contentType: 'multipart/form-data',
+		data: JSON.stringify( { idx : 0 } ),
+		success: connectCB,
+		error: function (a,b,c) {
+			console.log('configureCB() error a',a);
+			console.log('configureCB() error b',b);
+			console.log('configureCB() error c',c);
+			window.alert("Error sending connect command.");
+		}
+		});
+}
+
+function connectCB(data, status, xhr) {
+	console.log('connectCB()');
+	$('.block').hide();
+	$('#reconnectBlock').show();
+}
+
+</script>
+</html>
