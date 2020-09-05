@@ -1,0 +1,339 @@
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app57.us.archive.org';v.server_ms=742;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/static/js/ait-client-rewrite.js?v=1538596186.0" charset="utf-8"></script>
+<script type="text/javascript">
+WB_wombat_Init('https://web.archive.org/web', '20171221215526', 'www.thinksrs.com:80');
+</script>
+<script type="text/javascript" src="/static/js/wbhack.js?v=1538596186.0" charset="utf-8"></script>
+<script type="text/javascript">
+__wbhack.init('https://web.archive.org/web');
+</script>
+<link rel="stylesheet" type="text/css" href="/static/css/banner-styles.css?v=1538596186.0" />
+<link rel="stylesheet" type="text/css" href="/static/css/iconochive.css?v=1538596186.0" />
+<!-- End Wayback Rewrite JS Include -->
+
+    <title>SRS Thermistor Calculator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">   
+    
+    <!--[if IE]><script language="javascript" type="text/javascript" src="excanvas.min.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="https://web.archive.org/web/20171221215526js_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="https://web.archive.org/web/20171221215526js_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="https://web.archive.org/web/20171221215526js_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/alex_cal_draw.js"></script> 
+ 
+            <style type="text/css">
+                <!--
+                body {line-height: 11pt;}
+                a { text-decoration:none }
+                a:hover{text-decoration:underline;}
+                -->
+		.boxpopup {
+		  font-size:13;		
+		  color:black; background:#FFFF99; 
+		  width:250px;		
+		  text-align:left; 		
+		  padding:4px 5px 4px 5px; 	
+		  font-weight:normal;	 
+		  border:1px solid gray; }
+		 #pdqbox {position:absolute; visibility:hidden; z-index:100;}
+             </style>
+   
+        <script id="source" language="javascript" type="text/javascript"> 
+        var R1;  var R2; var R3;  ar T1; var T2; var T3; var A; var B; var C;
+        var Beta; var R25; var Rth; var Fail; var Rmin; var Rmax; var datasets;
+        </script>
+</head>
+ 
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<script type="text/javascript" src="/static/js/timestamp.js?v=1538596186.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/graph-calc.js?v=1538596186.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/auto-complete.js?v=1538596186.0" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/toolbar.js?v=1538596186.0" charset="utf-8"></script>
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+.wb-autocomplete-suggestions {
+    text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+    position: absolute; display: none; z-index: 2147483647; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+}
+.wb-autocomplete-suggestion { position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333; }
+.wb-autocomplete-suggestion b { font-weight: bold; }
+.wb-autocomplete-suggestion.selected { background: #f0f0f0; }
+</style>
+<div id="wm-ipp" lang="en" style="display:none;direction:ltr;">
+<div style="position:fixed;left:0;top:0;right:0;">
+<div id="wm-ipp-inside">
+  <div style="position:relative;">
+    <div id="wm-logo" style="float:left;width:130px;padding-top:10px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/static/images/toolbar/wayback-toolbar-logo.png" alt="Wayback Machine" width="110" height="39" border="0" /></a>
+    </div>
+    <div class="r" style="float:right;">
+      <div id="wm-btns" style="text-align:right;height:25px;">
+                  <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a href="#"
+             onclick="__wm.saveSnapshot('https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/NTCcalculator.htm', '20171221215526')"
+             title="Share via My Web Archive"
+             id="wm-save-snapshot-open"
+          >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php"
+             title="Sign In"
+             id="wm-sign-in"
+          >
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+        	<a href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" onclick="__wm.h(event);return false;" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" style="text-align:right;">
+	<a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://web.archive.org/web/20171221215526/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm', '', 'height=400,width=600'); return false;" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a href="#" onclick="window.open('https://twitter.com/intent/tweet?text=https://web.archive.org/web/20171221215526/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm&amp;via=internetarchive', '', 'height=400,width=600'); return false;" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+    </div>
+    <table class="c" style="">
+      <tbody>
+	<tr>
+	  <td class="u" colspan="2">
+	    <form target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/NTCcalculator.htm" onfocus="this.focus();this.select();" /><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20171221215526" /><input type="submit" value="Go" /></form>
+	  </td>
+	  <td class="n" rowspan="2" style="width:110px;">
+	    <table>
+	      <tbody>
+		<!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+		<tr class="m">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20171108033722/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm" title="08 Nov 2017"><strong>Nov</strong></a></td>
+		  <td class="c" id="displayMonthEl" title="You are here: 21:55:26 Dec 21, 2017">DEC</td>
+		  <td class="f" nowrap="nowrap"><a href="https://web.archive.org/web/20180129041945/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm" title="29 Jan 2018"><strong>Jan</strong></a></td>
+		</tr>
+		<!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+		<tr class="d">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20171204024547/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm" title="02:45:47 Dec 04, 2017"><img src="/static/images/toolbar/wm_tb_prv_on.png" alt="Previous capture" width="14" height="16" border="0" /></a></td>
+		  <td class="c" id="displayDayEl" style="width:34px;font-size:24px;white-space:nowrap;" title="You are here: 21:55:26 Dec 21, 2017">21</td>
+		  <td class="f" nowrap="nowrap"><a href="https://web.archive.org/web/20180113130324/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm" title="13:03:24 Jan 13, 2018"><img src="/static/images/toolbar/wm_tb_nxt_on.png" alt="Next capture" width="14" height="16" border="0" /></a></td>
+		</tr>
+		<!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+		<tr class="y">
+		  <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20161121070645/http://www.thinksrs.com:80/downloads/programs/Therm%20Calc/NTCCalibrator/NTCcalculator.htm" title="21 Nov 2016"><strong>2016</strong></a></td>
+		  <td class="c" id="displayYearEl" title="You are here: 21:55:26 Dec 21, 2017">2017</td>
+		  <td class="f" nowrap="nowrap">2018</td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="s">
+	    	    <div id="wm-nav-captures">
+	      	      <a class="t" href="/web/20171221215526*/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/NTCcalculator.htm" title="See a list of every capture for this URL">42 captures</a>
+	      <div class="r" title="Timespan for captures of this URL">18 Nov 2014 - 03 Apr 2018</div>
+	      </div>
+	  </td>
+	  <td class="k">
+	    <a href="" id="wm-graph-anchor">
+	      <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+		<canvas id="wm-sparkline-canvas" width="575" height="27" border="0"></canvas>
+	      </div>
+	    </a>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+    <div style="position:absolute;bottom:0;right:2px;text-align:right;">
+      <a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span style="font-size:80%">About this capture</span></a>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+            <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+    </div>
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/static/images/loading.gif" alt="loading" /></div>
+    </div>
+  </div></div></div></div><script type="text/javascript">
+__wm.bt(575,27,25,2,"web","https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/NTCcalculator.htm","2017-12-21",1996);
+</script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+<div id="container">   	    <div id="pdqbox"></div>
+	    <script type="text/javascript">	    
+                OffsetX=-30;  
+                OffsetY=20;   
+                var old,skn,iex=(document.all),yyy=-1000;
+                var ns4=document.layers
+                var ns6=document.getElementById&&!document.all
+                var ie4=document.all
+                if (ns4) skn=document.pdqbox
+                else if (ns6) skn=document.getElementById("pdqbox").style
+                else if (ie4) skn=document.all.pdqbox.style
+                if (ns4) document.captureEvents(Event.MOUSEMOVE);
+                else{skn.visibility="visible"; skn.display="none"; }                
+                document.onmousemove=get_mouse;
+                function popup(msg){                
+                var content="<div class=boxpopup>"+msg+"</div>";
+                yyy=OffsetY;
+                if(ns4){skn.document.write(content);skn.document.close();skn.visibility="visible"}
+                if(ns6){document.getElementById("pdqbox").innerHTML=content;skn.display=''}
+                if(ie4){document.all("pdqbox").innerHTML=content;skn.display=''} }                
+                function get_mouse(e){                
+                var x=(ns4||ns6)?e.pageX:event.x+document.body.scrollLeft;
+                skn.left=x+OffsetX;
+                var y=(ns4||ns6)?e.pageY:event.y+document.body.scrollTop;
+                skn.top=y+yyy;}                
+                function remove_popup(){               
+                yyy=-1000;
+                if(ns4){skn.visibility="hidden";}
+                else if (ns6||ie4)
+                skn.display="none";}
+	    </script> 
+    <table width="710," border="1" style="background-color: rgb(210, 255, 255); border-color: rgb(240,240,240) " cellpadding="10" cellspacing="0">
+    <tr>
+       <td>
+            <form name="form1">            
+            <a href="https://web.archive.org/web/20171221215526/http://www.thinksrs.com/" target="_blank"/>
+            <img style="border: 0px solid ; width: 40px; height: 28px;" title="Stanford Research Systems Inc" src="/web/20171221215526im_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/SRS.bmp"></a>
+             <span style="color: rgb(10, 10, 10);font-family: Arial; font-size: 22; font-weight: normal;">Thermistor Calculator
+             <span style="font-style: italic; font-size: 12;">V1.1</span></span><br>             
+             <span style="font-family: inherit; font-style: nornmal; font-size: 14; color: rgb(120, 120, 0)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for
+		<a target="_blank" title="LDC501 Laser Diode Controller" href="https://web.archive.org/web/20171221215526/http://www.thinksrs.com/products/LDC501.htm">Laser Diode and TEC Controllers</a>		 
+             <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by Stanford Research Systems Inc<br></span>
+		     
+	     <br>             
+             <span style="color: rgb(0, 0, 0); font-family: Arial; font-size: 12; font-weight: bold;">Please input resistance-temperature pairs:</span> <br>
+             <span style="font-family: Arial; font-size: 12; color: rgb(120,120,0); font-weight: normal;">
+                &nbsp;(Don't use the Enter key)</span>
+	     <span style="font-family: Times New Roman; font-size: 15; font-weight: normal">
+	     <div style="margin-left: 40px"> R (&#8486;)
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T (&#176;C)</div>                 
+            &nbsp; R1: <input value="25000" size="8" type="text" name="R1" onchange="Cal()"/> &nbsp; T1: <input value="5" size="6" type="text" name="T1" onchange="Cal()"/><br/>    
+            &nbsp; R2: <input value="10000" size="8" type="text" name="R2" onchange="Cal()"/> &nbsp; T2: <input value="25" size="6" type="text" name="T2" onchange="Cal()"/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<a herf="/" alt="" onmouseover="popup('The data pairs, (R1,T1), (R2,T2) and (R3,T3), should be measured at different temperatures. For best results, choose points so that two are close to the extremes of the operating range, and a third is near the middle. When a number is input, click outside to start calculation. Never use the Enter key.')" ; onmouseout="remove_popup()"><img style="border: 0px solid ; width: 16px; height: 16px;" src="/web/20171221215526im_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/Question.bmp"></a><br/>            
+            &nbsp; R3: <input value="4000" size="8" type="text" name="R3" onchange="Cal()"/> &nbsp; T3: <input value="45" size="6" type="text" name="T3" onchange="Cal()"/><br/><br>          
+            <span style="font-family: Arial; font-size: 13; font-weight: bold; color: rgb(0, 0, 0);">
+		Calculated Steinhart-Hart model coefficients:</span><br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A =
+            <input size="10" type="text" name="A" onchange="setA()"/><span style="font-family: Arial; font-size: 15;"> e-3</span><br/> 
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B =
+            <input size="10" type="text" name="B" onchange="setB()"/><span style="font-family: Arial;font-size: 15;"> e-4</span>	    	
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a herf="/" alt="" onmouseover="popup('The Steinhart-Hart coefficients are calculated from the three (R,T) points above. If you directly enter the coefficients here, the model will be changed to follow the new coefficients and ignore the (R,T) points. The curve and model calculator will always use the coefficients shown.')" ; onmouseout="remove_popup()"><img style="border: 0px solid ; width: 16px; height: 16px;" src="/web/20171221215526im_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/Question.bmp"></a><br/>	    
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C =
+            <input size="10" type="text" name="C" onchange="setC()"/><span style="font-family: Arial;font-size: 15;"> e-7</span>	    
+		&nbsp;<a herf="/" alt="" onmouseover="popup('  1/T = A + B·ln(R) + C·[ln(R)]<sup>3</sup><br>where: T is temperature in Kelvin.<br>             R is resistance in &amp;#8486.')" ; onmouseout="remove_popup()"><span style="font-family: Arial Narrow; font-size: 10; color: rgb(255,128,64);">See S-H model </span></a><br>            
+            <br><span style="font-family: Arial; font-size: 13; color: rgb(0,0,0); font-weight: bold;">
+                Calculated &beta; model coefficients:</span><br>
+	    <span style="font-family: Arial; font-size: 12; color: rgb(120,120,0); font-weight: normal;">
+                    &nbsp;(R3 and T3 are not used)</span><br>             
+            <br>&nbsp;R(25&#176;C) =
+            <input style="" size="9" type="text" name="R25" onchange="setR25()"/><span style="font-family: Arial;"> &#8486;</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a herf="/" alt="" onmouseover="popup('The β model coefficients are calculated from (R1,T1) and (R2,R2) above.  If you directly enter the coefficients here, the model will be changed to follow the new coefficients and ignore the (R,T) points. The curve and model calculator will always use the coefficients shown.')" ; onmouseout="remove_popup()"><img style="border: 0px solid ; width: 16px; height: 16px;" src="/web/20171221215526im_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/Question.bmp"></a><br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&beta; =
+            <input style="" size="9" type="text" name="Beta" onchange="setBeta()"/><span style="font-family: Arial;"> K</span>&nbsp;&nbsp;&nbsp;<a herf="/" alt="" onmouseover="popup('  R = R(25°C)·exp[β·(1/T - 1/298.15)] <br>where: T is temperature in Kelvin.<br>             R(25°C) is resistance at 25°C (in &amp;#8486).')" ; onmouseout="remove_popup()"><span style="font-family: Arial Narrow; font-size: 10; color: rgb(255,128,64);">See &beta; model </span></a><br>
+            </form> 
+       </td>
+       <td>
+	    <form name="form2">
+	    <div id="placeholder" style="width:350px; height:300px;"></div>       
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(120,120,0); font-size: 13; font-family: inherit;" id="choices"></span>
+            <span style="font-family: Arial; font-size: 12; color: rgb(120,120,0); font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Temperature(&#176;C)</span>
+	    <script>	    
+		var dsets = // prepare initial data for check box and initial drawing
+		    {"Beta": {label: "&beta;", data: [25, 10000]},			
+		    "Steinhart": {label: "S-H", data: [20, 10000]},			
+		    "Orignal": {label: "Data",	data: [25, 10000]}}	
+		var choiceContainer = $("#choices");
+		$.each(dsets, function(key, val){choiceContainer.append('<input type="checkbox" name="' + key +
+					       '" checked="checked" id="id' + key + '">' +
+					       '<label for="id' + key + '">'
+						+ val.label + '</label>'); })	    
+            </script>
+	     <br><br><span style="font-family: Arial; font-size: 22; font-weight: normal; color: rgb(10, 10, 10);">
+		&nbsp;&nbsp;&nbsp;Model Calculator</span><br>
+	          <span style="font-family: Arial; font-size: 12; color: rgb(120,120,0); font-weight: normal;">
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(The coefficients shown on the left are used)</span><br>
+                <table border="0">
+                    <tr style="font-family: Arial; font-size: 15; font-weight: normal">
+                        <th align="right">R(&#937;)&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        <th></th>
+                        <th align="left">&nbsp;&nbsp;&nbsp;T(&#176;C)</th>
+                    </tr>
+                    <tr style="font-family: Arial; font-size: 14; font-weight: normal">
+                        <th align="right">
+                                &nbsp;&nbsp;<a herf="/" alt="" onmouseover="popup('Coefficients on the left are used in this model calculator. Changing resistance will result in two temperatures corresponding to Steinhart-Hart model and β model. R and T can be directly entered. Arrrow keys are for R entry only. If Steinhart-Hart curve is non-monotonic, T entry will lead to no result.')" ; onmouseout="remove_popup()"><img style="border: 0px solid ; width: 16px; height: 16px;" src="/web/20171221215526im_/https://www.thinksrs.com/downloads/programs/Therm Calc/NTCCalibrator/Question.bmp"></a>
+                             &nbsp;
+                            &nbsp;&nbsp;<input value="10000" size="8" type="text" name="Rth" onkeyup="Model_Calculator();" onkeydown="if(event.keyCode==38) increaseR(); else if(event.keyCode==40) decreaseR(); "/></th>
+                        <th>&harr;</th>
+                        <th align="left"><input size="7" type="text" name="Tsteinhart" onchange="TsteinhartToRth()" ;/><span style="font-family: Arial; "> S-H model</th>
+                    </tr>
+                    <tr style="font-family: Arial; font-size: 14; font-weight: normal">                                                  
+                        <th align="right" style="font-family: Arial; font-size: 12; color: rgb(120,120,0); font-weight: normal"> Use &darr; &uarr; keys &nbsp;&nbsp;&nbsp;</th>
+                        <th></th>
+                        <th align="left"><input size="7" type="text" name="Tbeta" onchange="TbetaToRth()" ;/><span style="font-family: Arial;"> &beta; model</th>
+                    </tr>
+                </table>  
+	    <script>
+	    window.open=Cal();	    
+	    </script>
+	    </form>
+       </td>
+    </tr>
+    </table>
+ 
+    
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://web.archive.org/web/20171221215526/https://ssl./" : "https://web.archive.org/web/20171221215526/http://www./");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-15806985-4");
+pageTracker._setDomainName(".thinksrs.com");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+  
+    
+</div>
+</body>
+</html>
+
+<!--
+     FILE ARCHIVED ON 21:55:26 Dec 21, 2017 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 01:36:13 Oct 08, 2018.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  LoadShardBlock: 454.08 (3)
+  esindex: 0.009
+  captures_list: 471.055
+  CDXLines.iter: 10.686 (3)
+  PetaboxLoader3.datanode: 108.791 (4)
+  exclusion.robots: 0.561
+  exclusion.robots.policy: 0.542
+  RedisCDXSource: 1.842
+  PetaboxLoader3.resolve: 179.57
+  load_resource: 254.795
+-->
